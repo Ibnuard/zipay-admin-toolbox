@@ -1,6 +1,6 @@
 {
   "name": "zipay-merchant-kyc",
-  "homepage": "https://ibnuard.github.io/zipay-admin-toolbox/",
+  "homepage": "https://ibnuard.github.io/zipay-admin-toolbox",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
