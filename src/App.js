@@ -8,7 +8,8 @@ function App() {
   });
 
   const [response, setResponse] = React.useState();
-  const [user, setUser] = React.useState();
+  const [userOTP, setUserOTP] = React.useState();
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const handleChange = (e) => {
     setState({
@@ -29,7 +30,14 @@ function App() {
     console.log("submitted user");
   };
 
+  const handleCekUserOTP = (e) => {
+    e.preventDefault();
+    fetchApiUserOTP();
+    console.log("submitted user");
+  };
+
   const fetchApi = () => {
+    setIsLoading(true);
     console.log("Fecthinbg api...");
     fetch("https://api.zipay.id/api/Merchant/QrisKYCDetailSingle", {
       method: "POST",
@@ -45,10 +53,14 @@ function App() {
       }),
     })
       .then((response) => response.json())
-      .then((response) => setResponse(response?.result));
+      .then((response) => {
+        setResponse(response?.result);
+        setIsLoading(false);
+      });
   };
 
   const fetchApiUser = () => {
+    setIsLoading(true);
     console.log("Fecthing api user...");
     fetch("https://api.zipay.id/api/User/KYCDetail", {
       method: "POST",
@@ -63,10 +75,30 @@ function App() {
       }),
     })
       .then((response) => response.json())
-      .then((response) => setResponse(response?.result));
+      .then((response) => {
+        setResponse(response?.result);
+        setIsLoading(false);
+      });
   };
 
-  console.log("response : " + JSON.stringify(response));
+  const fetchApiUserOTP = () => {
+    setIsLoading(true);
+    console.log("Fecthing api user...");
+    fetch(`https://zipay-dev-toolbox.vercel.app/getotp/${state.phoneNumber}`, {
+      method: "GET",
+      headers: {
+        Accept: "application/json, text/plain, */*", // It can be used to overcome cors errors
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((response) => {
+        setUserOTP(response?.result[0]);
+        setIsLoading(false);
+      });
+  };
+
+  console.log("response : " + JSON.stringify(userOTP));
 
   return (
     <div className="meme-container">
@@ -89,6 +121,13 @@ function App() {
           />
           <button onClick={handleCekMerchant}>Cek Merchant</button>
           <button onClick={handleCekUser}>Cek User</button>
+          <button onClick={handleCekUserOTP}>Cek User OTP DEV</button>
+
+          {isLoading && (
+            <div style={{ textAlign: "left", padding: 20 }}>
+              <p style={{ color: "white" }}>LOADING....</p>
+            </div>
+          )}
 
           {response && (
             <div style={{ textAlign: "left", padding: 20 }}>
@@ -115,6 +154,16 @@ function App() {
               </p>
               <p style={{ color: "white" }}>
                 NPWP : {response?.npwp ?? "...."}
+              </p>
+            </div>
+          )}
+          {userOTP && (
+            <div style={{ textAlign: "left", padding: 20 }}>
+              <p style={{ color: "white" }}>
+                User OTP : {userOTP?.OTP ?? "...."}
+              </p>
+              <p style={{ color: "white" }}>
+                User ID : {userOTP?.UserId ?? "...."}
               </p>
             </div>
           )}
