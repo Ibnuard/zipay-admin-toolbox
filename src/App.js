@@ -8,8 +8,9 @@ function App() {
   });
 
   const [response, setResponse] = React.useState();
-  const [userOTP, setUserOTP] = React.useState();
   const [isLoading, setIsLoading] = React.useState(false);
+  const [kycLoading, setKycLoading] = React.useState(false);
+  const [kycResponse, setKycResponse] = React.useState();
 
   const handleChange = (e) => {
     setState({
@@ -30,12 +31,7 @@ function App() {
     console.log("submitted user");
   };
 
-  const handleCekUserOTP = (e) => {
-    e.preventDefault();
-    fetchApiUserOTP();
-    console.log("submitted user");
-  };
-
+  // ==================== KYC DETAIL
   const fetchApi = () => {
     setIsLoading(true);
     console.log("Fecthinbg api...");
@@ -59,6 +55,7 @@ function App() {
       });
   };
 
+  // ======================= KYC DETAIL
   const fetchApiUser = () => {
     setIsLoading(true);
     console.log("Fecthing api user...");
@@ -81,24 +78,37 @@ function App() {
       });
   };
 
-  const fetchApiUserOTP = () => {
-    setIsLoading(true);
+  // =================== ACC/RJJ KYC
+  const fetchApiKYC = (e, types) => {
+    e.preventDefault();
+    setKycLoading(true);
     console.log("Fecthing api user...");
-    fetch(`https://zipay-dev-toolbox.vercel.app/getotp/${state.phoneNumber}`, {
-      method: "GET",
+    const type = types == "acc" ? "ApprovalKYC" : "RejectKYC";
+    fetch(`https://api.zipay.id/api/User/${type}`, {
+      method: "POST",
       headers: {
         Accept: "application/json, text/plain, */*", // It can be used to overcome cors errors
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        adminPhoneNumber: "08170012002",
+        adminPassword: "123456",
+        userPhoneNumber: state.phoneNumber,
+        userMid: "zipay",
+        description: "",
+      }),
     })
       .then((response) => response.json())
       .then((response) => {
-        setUserOTP(response?.result[0]);
-        setIsLoading(false);
+        setKycResponse(
+          response?.status == 400 ? response?.errors : response?.result
+        );
+        setKycLoading(false);
+        console.log(JSON.stringify(response));
       });
   };
 
-  console.log("response : " + JSON.stringify(userOTP));
+  //===================== RENDER GAP
 
   return (
     <div className="meme-container">
@@ -121,7 +131,6 @@ function App() {
           />
           <button onClick={handleCekMerchant}>Cek Merchant</button>
           <button onClick={handleCekUser}>Cek User</button>
-          <button onClick={handleCekUserOTP}>Cek User OTP DEV</button>
 
           {isLoading && (
             <div style={{ textAlign: "left", padding: 20 }}>
@@ -157,16 +166,23 @@ function App() {
               </p>
             </div>
           )}
-          {userOTP && (
-            <div style={{ textAlign: "left", padding: 20 }}>
-              <p style={{ color: "white" }}>
-                User OTP : {userOTP?.OTP ?? "...."}
-              </p>
-              <p style={{ color: "white" }}>
-                User ID : {userOTP?.UserId ?? "...."}
-              </p>
-            </div>
-          )}
+          {response &&
+            (kycResponse ? (
+              <p>KYC Approval : {kycResponse}</p>
+            ) : (
+              <div>
+                <button
+                  onClick={(e) => (kycLoading ? null : fetchApiKYC(e, "acc"))}
+                >
+                  {kycLoading ? "Loading..." : "Approve KYC"}
+                </button>
+                <button
+                  onClick={(e) => (kycLoading ? null : fetchApiKYC(e, "rjj"))}
+                >
+                  {kycLoading ? "Loading..." : "Reject KYC"}
+                </button>
+              </div>
+            ))}
         </form>
       </div>
       {response && (
