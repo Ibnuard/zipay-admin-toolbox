@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/zipay-admin-toolbox/static/css/main.3e62b828.css",
-    "main.js": "/zipay-admin-toolbox/static/js/main.f2b1cb24.js",
+    "main.js": "/zipay-admin-toolbox/static/js/main.4849798f.js",
     "static/js/787.70e094a6.chunk.js": "/zipay-admin-toolbox/static/js/787.70e094a6.chunk.js",
     "index.html": "/zipay-admin-toolbox/index.html",
     "main.3e62b828.css.map": "/zipay-admin-toolbox/static/css/main.3e62b828.css.map",
-    "main.f2b1cb24.js.map": "/zipay-admin-toolbox/static/js/main.f2b1cb24.js.map",
+    "main.4849798f.js.map": "/zipay-admin-toolbox/static/js/main.4849798f.js.map",
     "787.70e094a6.chunk.js.map": "/zipay-admin-toolbox/static/js/787.70e094a6.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.3e62b828.css",
-    "static/js/main.f2b1cb24.js"
+    "static/js/main.4849798f.js"
   ]
 }
